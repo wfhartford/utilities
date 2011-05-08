@@ -3,7 +3,6 @@ package ca.cutterslade.utilities;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,7 +26,8 @@ public final class PropertiesUtils {
     return loadProperties(Resources.getResource(resourceName));
   }
 
-  public static ImmutableMap<String, String> loadProperties(final Class<?> contextClass, final String resourceName) throws IOException {
+  public static ImmutableMap<String, String> loadProperties(final Class<?> contextClass,
+      final String resourceName) throws IOException {
     return loadProperties(Resources.getResource(contextClass, resourceName));
   }
 
@@ -50,19 +50,28 @@ public final class PropertiesUtils {
   }
 
   public static ImmutableMap<String, String> systemProperties() {
-    return Maps.fromProperties(System.getProperties());
+    return prefixKeys("sys", Maps.fromProperties(System.getProperties()));
   }
 
   public static ImmutableMap<String, String> environmentProperties() {
-    return ImmutableMap.copyOf(System.getenv());
+    return prefixKeys("env", System.getenv());
+  }
+
+  private static ImmutableMap<String, String> prefixKeys(final String prefix, final Map<String, String> map) {
+    final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    for (final Map.Entry<String, String> entry : map.entrySet()) {
+      builder.put(prefix + '.' + entry.getKey(), entry.getValue());
+    }
+    return builder.build();
   }
 
   public static ImmutableMap<String, String> resolveProperties(final Map<String, String> properties) {
     return new PropertiesResolver(properties).getResolved();
   }
 
-  public static ImmutableMap<String, String> resolveProperties(final Map<String, String>... properties) {
-    return new PropertiesResolver(Arrays.asList(properties)).getResolved();
+  public static ImmutableMap<String, String> resolveProperties(
+      final Iterable<? extends Map<String, String>> properties) {
+    return new PropertiesResolver(properties).getResolved();
   }
 
 }

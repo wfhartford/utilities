@@ -10,8 +10,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import ca.cutterslade.utilities.PropertiesUtils;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -105,6 +103,27 @@ public class LoadPropertiesTest {
         .putAll(frenchReplaced).put("quatre", "?")
         .build();
     subBuilder.add(defautlsReplaced);
+    builder.add(subBuilder.build());
+
+    subBuilder = ImmutableList.builder();
+    subBuilder.add("echo.properties");
+    final ImmutableMap<String, String> echoUnreplaced = ImmutableMap.<String, String> builder()
+        .putAll(simpleValues).put("count", "${$echo(one,two,three)}")
+        .build();
+    subBuilder.add(echoUnreplaced);
+    subBuilder.add(countReplaced);
+    builder.add(subBuilder.build());
+
+    subBuilder = ImmutableList.builder();
+    subBuilder.add("echo-defaults.properties");
+    final ImmutableMap<String, String> echoDefaultsUnreplaced = ImmutableMap.<String, String> builder()
+        .putAll(simpleValues).put("count", "${$echo(one,two,three,four:?)}")
+        .build();
+    subBuilder.add(echoDefaultsUnreplaced);
+    final ImmutableMap<String, String> echoDefaultsReplaced = ImmutableMap.<String, String> builder()
+        .putAll(simpleValues).put("count", "1 2 3 ?")
+        .build();
+    subBuilder.add(echoDefaultsReplaced);
     builder.add(subBuilder.build());
 
     PARAMETERS = builder.build();
