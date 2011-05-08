@@ -126,6 +126,18 @@ public class LoadPropertiesTest {
     subBuilder.add(echoDefaultsReplaced);
     builder.add(subBuilder.build());
 
+    subBuilder = ImmutableList.builder();
+    subBuilder.add("pangram.properties");
+    final ImmutableMap<String, String> pangramUnreplaced = ImmutableMap.<String, String> builder()
+        .put("phrase", "${$read('fox.txt')}")
+        .build();
+    subBuilder.add(pangramUnreplaced);
+    final ImmutableMap<String, String> pangramReplaced = ImmutableMap.<String, String> builder()
+        .put("phrase", "The quick brown fox jumps over the lazy dog.")
+        .build();
+    subBuilder.add(pangramReplaced);
+    builder.add(subBuilder.build());
+
     PARAMETERS = builder.build();
   }
 
