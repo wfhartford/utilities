@@ -159,7 +159,7 @@ public class PropertiesResolver {
         throw new UnsupportedOperationException("getMethod has not been implemented");
       }
     },
-    ENUM_CONSTANT_REOLVER {
+    ENUM_CONSTANT_RESOLVER {
 
       @Override
       public Function<Iterable<String>, String> getMethod(final String methodName, final int argumentCount) {
