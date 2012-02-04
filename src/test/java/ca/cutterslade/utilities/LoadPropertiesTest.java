@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 
+// CSOFF: ExecutableStatementCount
 @RunWith(Parameterized.class)
 public class LoadPropertiesTest {
 
@@ -147,7 +148,7 @@ public class LoadPropertiesTest {
 
       @Override
       public Object[] apply(final ImmutableList<Object> input) {
-        return input.toArray();
+        return null == input ? null : input.toArray();
       }
 
     }));
