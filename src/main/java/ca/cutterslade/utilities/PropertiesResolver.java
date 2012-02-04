@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Enums;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -40,11 +42,11 @@ public class PropertiesResolver {
 
   private final Set<String> pending = Sets.newHashSet();
 
-  public PropertiesResolver(final Map<String, String> properties) {
+  public PropertiesResolver(@Nonnull final Map<String, String> properties) {
     this.source = ImmutableMap.copyOf(properties);
   }
 
-  public PropertiesResolver(final Iterable<? extends Map<String, String>> sources) {
+  public PropertiesResolver(@Nonnull final Iterable<? extends Map<String, String>> sources) {
     final List<Map<String, String>> sourceList = Lists.newArrayList(sources);
     Collections.reverse(sourceList);
     final Map<String, String> collected = Maps.newHashMap();
@@ -61,7 +63,7 @@ public class PropertiesResolver {
     return ImmutableMap.copyOf(resolved);
   }
 
-  private String getValue(final String key) {
+  private String getValue(@Nonnull final String key) {
     String value = resolved.get(key);
     if (null == value) {
       value = source.get(key);
@@ -81,7 +83,7 @@ public class PropertiesResolver {
     return value;
   }
 
-  private String getReplacement(final String replaceKey) {
+  private String getReplacement(@Nonnull final String replaceKey) {
     final Matcher matcher = REPLACE_KEY_PATTERN.matcher(replaceKey);
     Preconditions.checkArgument(matcher.matches(), "Replacement key %s does not match expected pattern %s",
         replaceKey, REPLACE_KEY_PATTERN.pattern());
@@ -106,7 +108,8 @@ public class PropertiesResolver {
     return replacement;
   }
 
-  private String getComputedReplacement(final String method, final String arguments, final String dflt) {
+  private String getComputedReplacement(@Nonnull final String method, @Nonnull final String arguments,
+      @Nonnull final String dflt) {
     final String[] args = arguments.split(",");
     final ImmutableList.Builder<String> builder = ImmutableList.builder();
     for (final String arg : args) {
@@ -121,8 +124,8 @@ public class PropertiesResolver {
     return getComputedReplacement(method, builder.build(), dflt);
   }
 
-  private String getComputedReplacement(final String methodName, final ImmutableList<String> arguments,
-      final String dflt) {
+  private String getComputedReplacement(@Nonnull final String methodName,
+      @Nonnull final ImmutableList<String> arguments, @Nonnull final String dflt) {
     final String result = getComputeMethod(methodName, arguments.size()).apply(arguments);
     return null == result ? dflt : result;
   }
@@ -168,10 +171,11 @@ public class PropertiesResolver {
       }
     };
 
-    public abstract Function<Iterable<String>, String> getMethod(String methodName, int argumentCount);
+    public abstract Function<Iterable<String>, String> getMethod(@Nonnull String methodName, int argumentCount);
   }
 
-  private Function<Iterable<String>, String> getComputeMethod(final String methodName, final int argumentCount) {
+  private Function<Iterable<String>, String>
+      getComputeMethod(@Nonnull final String methodName, final int argumentCount) {
     Function<Iterable<String>, String> method = null;
     for (final Resolver resolver : Resolver.values()) {
       method = resolver.getMethod(methodName, argumentCount);

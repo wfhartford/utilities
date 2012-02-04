@@ -5,8 +5,9 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 public class ResultSetTransformer<T> implements Iterator<T> {
@@ -16,7 +17,7 @@ public class ResultSetTransformer<T> implements Iterator<T> {
     @Override
     public Integer apply(final ResultSet input) {
       try {
-        return input.getInt(1);
+        return null == input ? null : input.getInt(1);
       }
       catch (final SQLException e) {
         throw Throwables.propagate(e);
@@ -30,9 +31,7 @@ public class ResultSetTransformer<T> implements Iterator<T> {
 
   private boolean alreadyHasNext;
 
-  public ResultSetTransformer(final ResultSet result, final Function<ResultSet, T> transformer) {
-    Preconditions.checkArgument(null != result);
-    Preconditions.checkArgument(null != transformer);
+  public ResultSetTransformer(@Nonnull final ResultSet result, @Nonnull final Function<ResultSet, T> transformer) {
     this.result = result;
     this.transformer = transformer;
   }

@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +24,16 @@ public final class PropertiesUtils {
     throw new UnsupportedOperationException();
   }
 
-  public static ImmutableMap<String, String> loadProperties(final String resourceName) throws IOException {
+  public static ImmutableMap<String, String> loadProperties(@Nonnull final String resourceName) throws IOException {
     return loadProperties(Resources.getResource(resourceName));
   }
 
-  public static ImmutableMap<String, String> loadProperties(final Class<?> contextClass,
-      final String resourceName) throws IOException {
+  public static ImmutableMap<String, String> loadProperties(@Nonnull final Class<?> contextClass,
+      @Nonnull final String resourceName) throws IOException {
     return loadProperties(Resources.getResource(contextClass, resourceName));
   }
 
-  public static ImmutableMap<String, String> loadProperties(final URL resource) throws IOException {
+  public static ImmutableMap<String, String> loadProperties(@Nonnull final URL resource) throws IOException {
     final InputSupplier<InputStream> inputSupplier = Resources.newInputStreamSupplier(resource);
     final Properties properties = new Properties();
     final InputStream stream = inputSupplier.getInput();
@@ -57,7 +59,8 @@ public final class PropertiesUtils {
     return prefixKeys("env", System.getenv());
   }
 
-  private static ImmutableMap<String, String> prefixKeys(final String prefix, final Map<String, String> map) {
+  private static ImmutableMap<String, String> prefixKeys(@Nonnull final String prefix,
+      @Nonnull final Map<String, String> map) {
     final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
     for (final Map.Entry<String, String> entry : map.entrySet()) {
       builder.put(prefix + '.' + entry.getKey(), entry.getValue());
@@ -65,12 +68,12 @@ public final class PropertiesUtils {
     return builder.build();
   }
 
-  public static ImmutableMap<String, String> resolveProperties(final Map<String, String> properties) {
+  public static ImmutableMap<String, String> resolveProperties(@Nonnull final Map<String, String> properties) {
     return new PropertiesResolver(properties).getResolved();
   }
 
   public static ImmutableMap<String, String> resolveProperties(
-      final Iterable<? extends Map<String, String>> properties) {
+      @Nonnull final Iterable<? extends Map<String, String>> properties) {
     return new PropertiesResolver(properties).getResolved();
   }
 

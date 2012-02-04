@@ -12,30 +12,44 @@ public enum BuiltinFunctions implements Function<Iterable<String>, String> {
 
     @Override
     public String apply(final Iterable<String> input) {
-      final StringBuilder builder = new StringBuilder();
-      for (final String s : input) {
-        builder.append(s).append(' ');
+      final String result;
+      if (null == input) {
+        result = null;
       }
-      if (builder.length() > 0) {
-        builder.setLength(builder.length() - 1);
+      else {
+        final StringBuilder builder = new StringBuilder();
+        for (final String s : input) {
+          builder.append(s).append(' ');
+        }
+        if (builder.length() > 0) {
+          builder.setLength(builder.length() - 1);
+        }
+        result = builder.toString();
       }
-      return builder.toString();
+      return result;
     }
   },
   READ {
 
     @Override
     public String apply(final Iterable<String> input) {
-      final StringBuilder builder = new StringBuilder();
-      for (final String resource : input) {
-        try {
-          builder.append(Resources.toString(Resources.getResource(resource), Charsets.UTF_8));
-        }
-        catch (final IOException e) {
-          throw new ComputationException(e);
-        }
+      final String result;
+      if (null == input) {
+        result = null;
       }
-      return builder.toString();
+      else {
+        final StringBuilder builder = new StringBuilder();
+        for (final String resource : input) {
+          try {
+            builder.append(Resources.toString(Resources.getResource(resource), Charsets.UTF_8));
+          }
+          catch (final IOException e) {
+            throw new ComputationException(e);
+          }
+        }
+        result = builder.toString();
+      }
+      return result;
     }
 
   },
