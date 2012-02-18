@@ -25,6 +25,20 @@ public class ResultSetTransformer<T> implements Iterator<T> {
     }
   };
 
+  public static final Function<ResultSet, String> STRING_TRANSFORMER = new Function<ResultSet, String>() {
+
+    @Override
+    public String apply(final ResultSet input) {
+      try {
+        return null == input ? null : input.getString(1);
+      }
+      catch (final SQLException e) {
+        throw Throwables.propagate(e);
+      }
+    }
+
+  };
+
   private final ResultSet result;
 
   private final Function<ResultSet, T> transformer;
